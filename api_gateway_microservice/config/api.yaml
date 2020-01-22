@@ -1,0 +1,13 @@
+swagger: '2.0'
+info:
+  description: 'This is an API-Gateway extendable microservice system.'
+  version: 2.0.0
+  title: NetApp's API-Gateway Extendable Microservice
+  contact:
+    email: charlie.mietzner@netapp.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: 0.0.0.0:8080
+schemes:
+  - http

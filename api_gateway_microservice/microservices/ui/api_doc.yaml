@@ -1,0 +1,50 @@
+swagger: '2.0'
+info:
+  description: 'This is a sample Pet .'
+  version: 2.0.0
+  title: NetApp's Microservice Petstore
+  contact:
+    email: charlie.mietzner@netapp.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: netappPet
+basePath: /ui
+tags:
+  - name: swagger
+    description: Services related to Swagger UI
+schemes:
+  - http
+
+paths:
+  
+  /ui:
+    get:
+      tags:
+        - swagger
+      summary: Returns a swagger UI interface
+      description: Returns a swagger UI interface
+      operationId: ui
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A swagger UI representation object.
+          schema:
+            type: object
+
+  /ui-yaml:
+    get:
+      tags:
+        - swagger
+      summary: Returns a swagger UI interface
+      description: Returns a swagger UI interface
+      operationId: ui_yaml
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A string representing the Swagger UI YAML.
+          schema:
+            type: object
+

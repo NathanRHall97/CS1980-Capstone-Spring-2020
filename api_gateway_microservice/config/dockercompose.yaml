@@ -1,0 +1,10 @@
+version: '3'
+networks:
+  my_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: 'false'
+    ipam:
+      config:
+      - subnet: 172.16.238.0/24
+      driver: default

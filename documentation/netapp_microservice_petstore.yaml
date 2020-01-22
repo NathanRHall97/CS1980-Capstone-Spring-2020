@@ -1,0 +1,537 @@
+swagger: '2.0'
+info:
+  description: 'This is a sample Petstore server backed by microservices.'
+  version: 1.0.0
+  title: NetApp's Microservice Petstore
+  contact:
+    email: charlie.mietzner@netapp.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: netapp
+basePath: /petstore
+tags:
+  - name: pets
+    description: Services related to the store's pets
+  - name: orders
+    description: Services related to the store's orders
+  - name: customers
+    description: Services related to the store's customers
+
+schemes:
+  - http
+
+paths:
+  /pets:
+    post:
+      tags:
+        - pets
+      summary: Registers a new pet(s)
+      description: Registers a new pet(s) with the store.
+      operationId: addPets
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: A list of one or more pet objects to register with the store.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+      responses:
+        '201':
+          description: Successfully registered the new pet(s) with the store. The list of the new pet(s) is returned.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+        '400':
+          description: Invalid pet input.
+    get:
+      tags:
+        - pets
+      summary: Returns a list of pets
+      description: Returns a list of all pets registered with the store. Query parameters support filtering this list by a pet's status and/or type.
+      operationId: getPets
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: status
+          description: Filters the list of pets returned to those with a status property matching the value provided.
+          required: false
+          type: string
+          enum:
+            - available
+            - pending
+            - sold
+        - in: query
+          name: type
+          description: Filters the list of pets returned to those with a type property matching the value provided.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: A list of all pets registered with the store, optionally filtered by status and/or type.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+
+  /pets/{petId}:
+    get:
+      tags:
+        - pets
+      summary: Retuns a pet
+      description: Returns a single pet registered 
+      operationId: getPetById
+      produces:
+        - application/json
+      parameters:
+        - name: petId
+          in: path
+          description: The id property of pet to return.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Returns the pet registered with provided id property.
+          schema:
+            $ref: '#/definitions/Pet'
+        '404':
+          description: The pet was not found.
+    delete:
+      tags:
+        - pets
+      summary: Deletes a pet
+      description: This will remove a pet previously registered with the store.
+      operationId: deletePet
+      parameters:
+        - in: path
+          name: petId
+          description: ID of the pet
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: The pet was successfully deleted.
+        '404':
+          description: The pet was not found.  
+    patch:
+      tags:
+        - pets
+      summary: Updates information about a pet
+      description: Updates information about a specific pet registered with the store. Any valid property provided in the body will be updated accordingly.
+      operationId: patchPet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: petId
+          description: the id property of the pet being updated
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: changes to the pet object
+          required: true
+          schema:
+            $ref: '#/definitions/Pet'
+      responses:
+        '200':
+          description: Successfully updated the pet's info. Returns updated pet.
+          schema:
+            $ref: '#/definitions/Pet'
+        '400':
+          description: Invalid pet input.
+        '404':
+          description: No pet with the provided id property could be found.
+  
+  /pet/{petId}/uploadImage:
+    post:
+      tags:
+        - pets
+      summary: Uploads an image of the pet
+      description: Uploads an image to associate with the pet. Only one image can currently be associated with a pet.
+      operationId: uploadPetImage
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: petId
+          in: path
+          description: The id property of pet to upload an image for.
+          required: true
+          type: integer
+        - name: file
+          in: formData
+          description: file to upload
+          required: true
+          type: file
+      responses:
+        '204':
+          description: Successfully uploaded the image of the pet.
+        '400':
+          description: Operation failed because an image associated with pet already exists.
+        '404':
+          description: No pet with provided id property was found.
+
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: Creates an order for a pet(s)
+      description: When a pet is ordered, the Order is registered with the store.
+      operationId: createOrder
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: The order placed for a pet(s).
+          required: true
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '201':
+          description: Successfully registered the order with the store. The newly created order is returned.
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          description: Invalid Order.
+    get:
+      tags:
+        - orders
+      summary: Returns a list of orders
+      description: Returns a list of all orders registered with the store. Query parameters support filtering this list by a an order's status property.
+      operationId: getOrders
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: status
+          description: Filters the list of orders returned to those with a status property matching the value provided.
+          required: false
+          type: string
+          enum:
+            - pending
+            - complete
+            - returned
+            - cancelled
+      responses:
+        '200':
+          description: A list of all orders registered with the store, optionally filtered by status.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+
+  /orders/{orderId}:
+    get:
+      tags:
+        - orders
+      summary: Retuns an order
+      description: Returns a single order with the order id provided
+      operationId: getOrderbyId
+      produces:
+        - application/json
+      parameters:
+        - name: orderId
+          in: path
+          description: The id property of order to return.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Order'
+        '404':
+          description: Order not found
+    delete:
+      tags:
+        - orders
+      summary: Deletes an order
+      description: This will remove an order previously registered with the store.
+      operationId: deleteOrder
+      parameters:
+        - in: path
+          name: orderId
+          description: ID of the order
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: The order was successfully deleted.
+        '404':
+          description: The order was not found.
+    patch:
+      tags:
+        - orders
+      summary: Updates information about an order.
+      description: Updates information about a specific order registered with the store. Any valid property provided in the body will be updated accordingly.
+      operationId: patchOrder
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: orderId
+          description: the id property of the order being updated
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: changes to the order object
+          required: true
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '200':
+          description: Successfully updated the order's info. Returns updated order.
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          description: Invalid order input.
+        '404':
+          description: No order with the provided id property was found.
+
+  /customers:
+    post:
+      tags:
+        - customers
+      summary: Registers one or more new customers
+      description: Adds customer information to the store's registry.
+      operationId: addCustomers
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: A list of one or more customer's info.
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Customer'
+      responses:
+        '201':
+          description: Successfully registered the new customer(s) with the store. The new customer info is returned.
+          schema:
+            $ref: '#/definitions/Customer'
+        '400':
+          description: Invalid customer input.
+    get:
+      tags:
+        - customers
+      summary: Returns a list of customers
+      description: Returns a list of all customers registered with the store.
+      operationId: getCustomers
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A list of all customers registered with the store.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Customer'
+
+  /customers/{customerId}:
+    get:
+      tags:
+        - customers
+      summary: Gets a customer by using their id property
+      description: Returns a single customer, uniquely identified by their id property.
+      operationId: getCustomerById
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          description: The id property of a customer registered with the store.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Returns a customer registered with the store under that id.
+          schema:
+            $ref: '#/definitions/Customer'
+        '404':
+          description: A customer with that id was not found.
+    delete:
+      tags:
+        - customers
+      summary: Deletes a customer
+      description: This will remove a customer previously registered with the store.
+      operationId: deleteCustomer
+      parameters:
+        - in: path
+          name: customerId
+          description: The id property of the customer registered with the store.
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: The customer was successfully deleted.
+        '404':
+          description: The customer was not found.  
+    patch:
+      tags:
+        - customers
+      summary: Updates information about a customer
+      description: Updates information about a specific customer registered with the store. Any valid property provided in the body will be updated accordingly.
+      operationId: patchCustomer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: customerId
+          description: The id property of the customer to update.
+          required: true
+          type: integer
+        - in: body
+          name: body
+          description: changes to the customer object.
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        '200':
+          description: Successfully updated the customer's info. Returns updated customer.
+          schema:
+            $ref: '#/definitions/Customer'
+        '400':
+          description: Invalid customer input.
+        '404':
+          description: A customer with the provided id property was not found.
+  
+  /customers/lookup/{customerEmail}:
+    get:
+      tags:
+        - customers
+      summary: Looks up a customer by using their email address.
+      description: Returns a single customer, uniquely identified by their registered email address.
+      operationId: getCustomerByEmail
+      produces:
+        - application/json
+      parameters:
+        - name: customerEmail
+          in: path
+          description: The full email address of the customer.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Returns a customer registered with the store under that email address.
+          schema:
+            $ref: '#/definitions/Customer'
+        '404':
+          description: A customer with that email address was not found.
+
+definitions:
+
+  Order:
+    type: object
+    properties:
+      id:
+        description: A unique integer identifier for the order generated by the server. Cannot be PATCHed or POSTed.
+        type: integer
+      customer:
+        description: An integer value used to identify the customer who placed the order.
+        type: integer
+      itemsSold:
+        description: A list of one or more items that were sold.
+        type: array
+        items:
+          $ref: '#/definitions/OrderItems'
+      orderTotal:
+        description: The total sales price of the order.
+        type: integer
+      status:
+        type: string
+        description: The status of the order.
+        enum:
+            - pending
+            - complete
+            - returned
+            - cancelled
+
+  OrderItems:
+    type: object
+    properties:
+      itemId:
+        description: The id property of the item
+        type: integer
+      price:
+        description: The sales price of the item
+        type: number
+        format: float
+
+  Customer:
+    type: object
+    properties:
+      id:
+        description: A unique integer identifier for the customer generated by the server. Cannot be PATCHed or POSTed.
+        type: integer
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        description: The full email address of the customer.
+        type: string
+      phone:
+        type: string
+      purchaseHistory:
+        description: A list of unique integer values representing the ids of orders placed by this customer.
+        type: array
+        items:
+          type: integer
+      currentPets:
+        description: A list of unique integer values representing the ids of pets owned by this customer.
+        type: array
+        items:
+          type: integer
+
+  Pet:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: gizmo
+      photoUrl:
+        description: The URL of an image associated with the pet.
+        type: string
+      type:
+        description: The type of animal a pet is.
+        type: string
+        enum:
+          - dog
+          - cat
+          - bird
+          - hamster
+          - mogwai
+      status:
+        type: string
+        description: pet status in the store
+        enum:
+          - available
+          - pending
+          - sold
+      price:
+        type: number
+        format: float
+        description: the sales price of the pet

@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+from flask import Flask
+import requests
+app = Flask(__name__)
+
+@app.route("/", methods=['GET'])
+def get_index():
+    return 'You have reached the API-Gateway index page'
+
+{{#operations}}
+@app.route('{{path}}', methods=['{{request_method}}'])
+def {{name}}({{#parameters}}{{param_name}},{{/parameters}}):
+    microservice_response = requests.{{request_method}}("http://{{ip}}{{port}}{{path}}",
+        {{#parameters}}{{param_name}},{{/parameters}}
+    )
+    return microservice_response.content
+{{/operations}}
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8080)

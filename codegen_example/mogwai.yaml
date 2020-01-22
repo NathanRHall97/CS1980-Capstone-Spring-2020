@@ -1,0 +1,118 @@
+swagger: '2.0'
+info:
+  description: 'This is a sample server'
+  version: 1.0.0
+  title: Gremlinz4Lyfe
+  contact:
+    email: charlie.mietzner@netapp.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: charlie
+basePath: /gremlinz
+tags:
+  - name: mogwai
+    description: Services related to mogwai
+
+schemes:
+  - http
+
+paths:
+  /mogwai:
+    post:
+      tags:
+        - mogwai
+      summary: Registers a new mogwai
+      description: Registers a new mogwai; WARNING--AVOID FEEDING AFTER MIDNIGHT.
+      operationId: addMogwai
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Just put a mogwai here, dude.
+          required: true
+          schema:
+              $ref: '#/definitions/Mogwai'
+      responses:
+        '201':
+          description: Successfully registered the new Mogwai with the store.
+        '400':
+          description: Invalid mogwai input--are you a gremlin?
+    get:
+      tags:
+        - mogwai
+      summary: Returns a list of mogwai
+      description: Returns a list of all mogwai registered with the store.
+      operationId: getMogwai
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: A list of all mogwai registered.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Mogwai'
+
+  /mogwai/{mogwaiId}:
+    get:
+      tags:
+        - mogwai
+      summary: Retuns a mogwai
+      description: Returns a single mogwai registered 
+      operationId: getMogwaiById
+      produces:
+        - application/json
+      parameters:
+        - name: mogwaiId
+          in: path
+          description: The id property of the mogwai.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Returns the mogwai.
+          schema:
+            $ref: '#/definitions/Mogwai'
+        '404':
+          description: The mogwai was not found.
+    delete:
+      tags:
+        - mogwai
+      summary: Deletes a mogwai
+      description: This will remove a mogwai previously registered.
+      operationId: deleteMogwaiById
+      parameters:
+        - in: path
+          name: mogwaiId
+          description: The id property of the mogwai.
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: The mogwai was successfully deleted.
+        '404':
+          description: The mogwai was not found.  
+
+definitions:
+
+  Mogwai:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: gizmo
+      type:
+        description: Is your mogwai still a mogwai?
+        type: string
+        enum:
+          - mogwai
+          - gremlin
+          - spider_gremlin
+          - googley_eyes_gremlin
+          - gargoyle_gremlin

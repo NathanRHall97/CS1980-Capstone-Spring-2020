@@ -1,0 +1,51 @@
+# this is the Compose file version, it is used by docker-compose to decide how to interpret the
+# directives below 'version'
+version: '3'
+
+# the networks section lets you set up the networking used by your services
+networks:
+  # we are creating our own network here called 'my_network'
+  my_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    # ipam stands for 'ip address management'
+    # but basically we just use this section to configure
+    # the gateway / subnet for our 'my_network' network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+
+# define the services you are using (i.e. your microservices)
+services:
+
+  # the internal microservice
+  internal_microservice:
+    build:
+      # this is the path to the internal microservice dockerfile
+      # relative to the compose file
+      context: internal_microservice
+      dockerfile: Dockerfile
+    # you can specify which networks our internal microservice
+    # should be connected to (we want'my_network')
+    networks:
+      my_network:
+        # you can also specify an IP address for your container
+        ipv4_address: 172.16.238.3
+
+  # API Gateway service
+  api_gateway:
+    build:
+      # this is the path to the api gateway dockerfile
+      # relative to the compose file
+      context: api_gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Forward port 8080 on the host machine to the exposed port 8080 on the container <-- this is what lets the outside world talk to this container
+    # you can specify which networks our api gateway container
+    # should be connected to (we want my_network)
+    networks:
+      my_network:
+        # you can also specify an IP address for your container
+        ipv4_address: 172.16.238.2
