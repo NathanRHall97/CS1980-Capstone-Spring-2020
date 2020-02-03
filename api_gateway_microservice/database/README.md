@@ -4,11 +4,15 @@
 
 1. Run `docker pull postgres` to get the postgres docker image
 
-2. Go back to api_gateway_microservice directory and run 'docker-compose up db_server'
+2. Copy the code from `Documentation/docker_copy.yaml` into `api_gateway_microservice/docker-compose.yaml`
+		- db_server goes under the 'services' category
+		- volumes is its own category & my_dbdata goes under it
 
-3. Once the postgres container is spinned up - Open a new terminal in this directory
+3. Go back to api_gateway_microservice directory Run 'docker-compose up db_server'
 
-4. Run 'bash Scripts/Dbsetup'
+4. Once the postgres container is spinned up - Open a new terminal in this directory
+
+5. Run 'bash Scripts/Dbsetup'
 
 	- This script does the following:
 
