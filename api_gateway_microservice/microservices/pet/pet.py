@@ -1,17 +1,21 @@
 from flask import Flask, make_response, abort, request
 import os
 import json
+import psycopg2
 
 app = Flask(__name__)
 
 Pets = {0: {'id':0, 'name': 'dog', 'status':'sold'},
-    1: {'id':1, 'name': 'cat', 'status':'pending'}
+    1: {'id':1, 'name': 'cat', 'status':'pending'}, 
+    2: {'id':2, 'name': 'lizard', 'status':'pending'}
     }
+
 
 @app.route("/pet", methods = ['GET','POST','PATCH'])
 def update_pet():
     if request.method == 'POST':
-        #        content = request.get_json()
+        # content = request.get_json()
+
         petId = len(Pets)
         name = request.form.get('name')
         status = request.form.get('status')
