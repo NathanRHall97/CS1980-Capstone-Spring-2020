@@ -8,7 +8,7 @@
 	- db_server goes under the 'services' category
 	- volumes is its own category & my_dbdata goes under it
 
-3. Go back to api_gateway_microservice directory Run `docker-compose up db_server`
+3. Go back to the api_gateway_microservice directory & run `docker-compose up db_server`
 
 4. Once the postgres container is spinned up - Open a new terminal in this directory
 
