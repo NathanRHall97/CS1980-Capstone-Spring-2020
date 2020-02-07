@@ -4,7 +4,7 @@
   3. New microservice's OpenAPI file must be named `api_doc.yaml` or `api_doc.yml`.
 
 ## How to run:
-1. Install pystache module to read/write from mustache templates `pip install pystache`
+1. Install requirements from root folder Documentation `pip install -r requirements.txt` 
 2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs
 3. Run newly generated API gateway server with `python api_gateway.py`
 4. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
