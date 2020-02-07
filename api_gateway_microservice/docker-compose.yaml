@@ -1,0 +1,41 @@
+networks:
+  my_network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: 'false'
+    ipam:
+      config:
+      - subnet: 172.16.238.0/24
+      driver: default
+services:
+  api_gateway:
+    build:
+      context: microservices/api_gateway
+      dockerfile: Dockerfile
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.5
+    ports:
+    - 8080:8080
+  pet:
+    build:
+      context: microservices/pet
+      dockerfile: Dockerfile
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.6
+  ui:
+    build:
+      context: microservices/ui
+      dockerfile: Dockerfile
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.7
+  user:
+    build:
+      context: microservices/user
+      dockerfile: Dockerfile
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.8
+version: '3'
