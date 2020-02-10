@@ -7,7 +7,7 @@ conn = psycopg2.connect(
     user='postgres',
 )
 cur = conn.cursor()
-cur.execute("SELECT * FROM petTable;")
+cur.execute("SELECT * FROM petTable")
 result = cur.fetchall()
 print(result)
 conn.commit()

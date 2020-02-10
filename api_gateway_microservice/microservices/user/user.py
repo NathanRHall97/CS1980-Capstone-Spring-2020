@@ -1,10 +1,29 @@
 from flask import Flask
 from flask_restful import abort, Api, Resource, request
 import json
+import psycopg2
 
 app = Flask(__name__)
 
 CUSTOMERS = {0: 'Amy', 1: 'Bill', 2: 'Caroline'} #should be replaced by proper db
+
+#Function to create a connection and return it
+def create_connection():
+    connection = psycopg2.connect(
+        host='172.16.238.9', #This is the subnet IP for the Server, declared in docker-compose file.
+        port=5432,
+        dbname='user_db',
+        user='postgres',
+    )
+    return connection
+
+def get_all_users():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("Select * from users")
+    x = cursor.fetchall()
+    cursor.close()
+    return x
 
 @app.route('/')
 def aa():
@@ -15,7 +34,8 @@ def get():
 	if request.args.get('cid'):
 		cid = int(request.args.get('cid'))
 		return json.dumps((cid, CUSTOMERS[cid]))
-	return json.dumps(CUSTOMERS)
+	x = get_all_users()
+	return json.dumps(x)
 
 @app.route("/user/<int:cid>", methods=['GET'])
 def get_user(cid):

@@ -20,6 +20,9 @@ services:
   db_server:
     image: "postgres:11"
     container_name: "my_postgres"
+    networks:
+      my_network:
+        ipv4_address: 172.16.238.9
     ports:
       - "54320:5432"
     environment:

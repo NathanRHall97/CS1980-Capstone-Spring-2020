@@ -6,9 +6,28 @@ import psycopg2
 app = Flask(__name__)
 
 Pets = {0: {'id':0, 'name': 'dog', 'status':'sold'},
-    1: {'id':1, 'name': 'cat', 'status':'pending'}, 
+    1: {'id':1, 'name': 'cat', 'status':'pending'},
     2: {'id':2, 'name': 'lizard', 'status':'pending'}
     }
+
+#Function to create a connection and return it
+def create_connection():
+    connection = psycopg2.connect(
+        host='172.16.238.9', #This is the subnet IP for the Server, declared in docker-compose file.
+        port=5432,
+        dbname='pet_db',
+        user='postgres',
+    )
+    return connection
+
+#Functions that calls pet_db and returns all the pets
+def get_all_pets():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("Select * from petTable")
+    x = cursor.fetchall()
+    cursor.close()
+    return x
 
 
 @app.route("/pet", methods = ['GET','POST','PATCH'])
@@ -21,8 +40,15 @@ def update_pet():
         status = request.form.get('status')
         d = {"id": petId, "name": name, "status": status}
         Pets[petId] = d
-        return json.dumps(d)
-    return json.dumps(Pets)
+
+        #Testing to get all pets
+        x = get_all_pets()
+        return json.dumps(x)
+        #return get_all_pets()
+
+    #Testing to get all pets
+    z = get_all_pets()
+    return json.dumps(z)
 
 @app.route("/pet/<petId>", methods = ['GET'])
 def find_by_id(petId):
