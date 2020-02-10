@@ -5,14 +5,14 @@
 1. Run `docker pull postgres` to get the postgres docker image
 
 2. Copy the code from `Documentation/docker_copy.yaml` into `api_gateway_microservice/docker-compose.yaml`
-		- db_server goes under the 'services' category
-		- volumes is its own category & my_dbdata goes under it
+	- db_server goes under the 'services' category
+	- volumes is its own category & my_dbdata goes under it
 
-3. Go back to api_gateway_microservice directory Run 'docker-compose up db_server'
+3. Go back to the api_gateway_microservice directory & run `docker-compose up db_server`
 
 4. Once the postgres container is spinned up - Open a new terminal in this directory
 
-5. Run 'bash Scripts/Dbsetup'
+5. Run `bash Scripts/Dbsetup`
 
 	- This script does the following:
 
@@ -32,5 +32,5 @@
 
 2. Also make sure that bash Dbsetup completed correctly
 
-3. Run 'Python Scripts/testconnection.py'
+3. Run `Python Scripts/testconnection.py`
 	- This python file makes a select all on petTable schema. Should return 10 pets that were added.
