@@ -94,3 +94,7 @@ definitions:
         type: integer
       name:
         type: string
+        example: Mary Lou
+      role:
+        type: string
+        example: Customer

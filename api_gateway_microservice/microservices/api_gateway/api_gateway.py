@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask
+from flask import Flask, request
 import requests
 app = Flask(__name__)
 
@@ -20,28 +20,24 @@ def ui_yaml():
     )
     return microservice_response.content
 @app.route('/user', methods=['post'])
-def register_customer(body,):
-    microservice_response = requests.post("http://172.16.238.7:8080/user",
-        body,
-    )
+def register_customer():
+    content = request.get_json()
+    microservice_response = requests.post("http://172.16.238.7:8080/user", data=content)
     return microservice_response.content
 @app.route('/user', methods=['get'])
 def get():
     microservice_response = requests.get("http://172.16.238.7:8080/user",
-        
     )
     return microservice_response.content
-@app.route('/user/{customerId}', methods=['get'])
+@app.route('/user/<customerId>', methods=['get'])
 def get_user(customerId,):
-    microservice_response = requests.get("http://172.16.238.7:8080/user/{customerId}",
-        customerId,
+    microservice_response = requests.get("http://172.16.238.7:8080/user/{}".format(customerId)
     )
     return microservice_response.content
 @app.route('/pet', methods=['post'])
-def update_pet(body,):
-    microservice_response = requests.post("http://172.16.238.8:8080/pet",
-        body,
-    )
+def update_pet():
+    content = request.get_json()
+    microservice_response = requests.post("http://172.16.238.8:8080/pet", data=content)
     return microservice_response.content
 @app.route('/pet', methods=['get'])
 def update_pets():
@@ -49,12 +45,11 @@ def update_pets():
         
     )
     return microservice_response.content
-@app.route('/pet/{petId}', methods=['get'])
+@app.route('/pet/<petId>', methods=['get'])
 def find_by_id(petId,):
-    microservice_response = requests.get("http://172.16.238.8:8080/pet/{petId}",
-        petId,
+    microservice_response = requests.get("http://172.16.238.8:8080/pet/{}".format(petId)
     )
     return microservice_response.content
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
