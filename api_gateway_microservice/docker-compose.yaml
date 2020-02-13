@@ -17,19 +17,6 @@ services:
         ipv4_address: 172.16.238.6
     ports:
     - 8080:8080
-  db_server:
-    image: "postgres:11"
-    container_name: "my_postgres"
-    networks:
-      my_network:
-        ipv4_address: 172.16.238.9
-    ports:
-      - "54320:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-    volumes:
-      - my_dbdata:/var/lib/postgresql/data
   pet:
     build:
       context: microservices/pet
@@ -51,6 +38,4 @@ services:
     networks:
       my_network:
         ipv4_address: 172.16.238.7
-volumes:
-  my_dbdata:
 version: '3'
