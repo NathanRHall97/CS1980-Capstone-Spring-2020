@@ -6,8 +6,10 @@
 ## How to run:
 1. Install requirements from root folder Documentation `pip install -r requirements.txt` 
 2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs
-3. Run newly generated API gateway server with `python api_gateway.py`
-4. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
+3. Follow instructions in `database` directory to setup database server
+4. Run newly generated API gateway server with `python api_gateway.py`
+5. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
 
 ## Notes:
 1. Default configuration information is in `config/` directory.
+2. Database documentation is in `database/Documentation` directory.

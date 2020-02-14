@@ -38,6 +38,7 @@ def get_api_yaml_paths(directory):
                 dict_api_yamls[root] = file_path
     return dict_api_yamls
 
+
 # Verifies the subnet mask is 0/24. Currently we do not support others 
 def get_subnet_range(sub_mask):
     if(sub_mask == ALLOWABLE_SUBNET_MASK):
@@ -82,6 +83,7 @@ def make_dockercompose_file(microservices_dict, compose_dict):
             new_microservice[name]['ports'] = [(DEFAULT_PORT+':'+DEFAULT_PORT)] # api gateway listens on 8080
         compose_dict.add('services', new_microservice)
     compose_dict.write_me_to_file('docker-compose.yaml')
+
 
 # Main application logic
 def main():

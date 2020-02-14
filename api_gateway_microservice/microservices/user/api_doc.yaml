@@ -29,15 +29,6 @@ paths:
         - application/json
       produces:
         - application/json
-      parameters:
-        - in: body
-          name: body
-          description: A list of one or more customer's info.
-          required: true
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/User'
       responses:
         '201':
           description: Successfully registered the new customer(s) with the store. The new customer info is returned.
@@ -61,7 +52,7 @@ paths:
             items:
               $ref: '#/definitions/User'
 
-  /user/{customerId}:
+  /user/:
     get:
       tags:
         - user
@@ -94,3 +85,7 @@ definitions:
         type: integer
       name:
         type: string
+        example: Mary Lou
+      role:
+        type: string
+        example: Customer
