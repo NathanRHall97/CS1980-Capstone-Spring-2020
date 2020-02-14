@@ -36,8 +36,8 @@ When looking to select a Python test framework for this project, we considered 3
 
 For this project we agreed that due to its extra Docker support and compact test suites, Pytest is the best option for our test framework.
 
-<h4>Our Selection: Pytest</h4>
+<h3>Our Selection: Pytest</h3>
 
-<h4>Pytest Documentation</h4>
+<h3>Pytest Documentation</h3>
 
 Here is the link to the [Pytest Documentation](https://docs.pytest.org/en/latest/contents.html). Any questions regarding the usage of the Pytest testing framework should be referred to this link.
