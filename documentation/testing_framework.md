@@ -34,9 +34,9 @@ When looking to select a Python test framework for this project, we considered 3
 	 - Less readable.
 	 - Long and very specific test cases required.
 
-For this project we agreed that due to its extra Docker support and compact test suites, Pytest is the best option for our test framework.
-
 <h3>Our Selection: Pytest</h3>
+
+For this project we agreed that due to its extra Docker support and compact test suites, Pytest is the best option for our test framework.
 
 <h3>Pytest Documentation</h3>
 
