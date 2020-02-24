@@ -5,6 +5,7 @@ conn = psycopg2.connect(
     port=54320,
     dbname='pet_db',
     user='postgres',
+    password='postgres',
 )
 cur = conn.cursor()
 cur.execute("SELECT * FROM petTable")

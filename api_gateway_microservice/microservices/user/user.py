@@ -15,6 +15,7 @@ def create_connection():
         port=5432,
         dbname='user_db',
         user='postgres',
+        password='postgres',
     )
     return connection
 
