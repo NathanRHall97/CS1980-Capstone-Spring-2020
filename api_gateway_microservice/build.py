@@ -82,7 +82,12 @@ def make_dockercompose_file(microservices_dict, compose_dict):
         if(name == GATEWAY_NAME):
             new_microservice[name]['ports'] = [(DEFAULT_PORT+':'+DEFAULT_PORT)] # api gateway listens on 8080
         compose_dict.add('services', new_microservice)
+    #Database service written in
+    database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": '172.16.238.9'}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
+    compose_dict.add('services', database_service)
+
     compose_dict.write_me_to_file('docker-compose.yaml')
+
 
 
 # Main application logic
