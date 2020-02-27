@@ -1,0 +1,13 @@
+# ignore macOS Files
+.DS_Store
+
+# ignore pycache files
+__pycache__/
+
+# ignore yaml
+api_gateway.yaml
+docker-compose.yaml
+
+# ignore self generated python
+api_gateway.py
+generated_server.py
