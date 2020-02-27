@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "Setting up Databases for microservices.."
+echo "..."
+
+{{#services}}
+echo "Setting up {{.}} database"
+docker exec -it my_postgres psql -U postgres -c "create database {{.}}_db"
+echo "..."
+{{/services}}
+
+echo "Initializing tables and values into Databases"
+echo "..."
+
+{{#services}}
+echo "Running {{.}} DB Script"
+python {{.}}-init.py
+echo "..."
+{{/services}}
+
+echo "Done."

@@ -1,6 +1,7 @@
 import pystache
 from prance import ResolvingParser
 
+
 # Class for constructing code based on pystache templates
 class PystacheEngine:
     def __init__(self):
@@ -18,6 +19,11 @@ class PystacheEngine:
                         self.code['operations'].append(operation)
                 else:
                     self.code = self.get_swagger_info(self.get_spec(yaml), ip_dict.get(name), dict_variables)
+        return self.code
+
+    #Takes a dictionary and loads it into the code
+    def load_dict(self, input):
+        self.code = input
         return self.code
 
     # Takes a template input file and an output file path and renders the pystache template and writes it
