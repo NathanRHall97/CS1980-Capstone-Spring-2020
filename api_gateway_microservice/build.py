@@ -127,11 +127,8 @@ def make_db_files(get_yaml_file):
                     write_file = open(OUTPUT_SQL+service+".sql", 'w')
                     write_file.write("--SQL File for " + service + " microservice")
                     #Create Python Files to execute SQL Files
-                    #make_python_SQL(service)
                     make_pysql(service)
                 #Create Bash Script for easy Database Initialization
-                #make_db_bash_script(list_of_keys)
-                #make_windows_db_bash_script(list_of_keys)
                 make_bash(list_of_keys)
 
 # Main application logic
