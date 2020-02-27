@@ -1,8 +1,4 @@
-#Python Script To read pet SQL File and execute them in directed database
-#Created 2/2/20
-
 import psycopg2
-import time
 
 def executeScriptsFromFile(filename):
     # Open and read the file as a single buffer
@@ -18,26 +14,27 @@ def executeScriptsFromFile(filename):
         if command == "":
             print("X\n")
         elif command != "":
-            print(command + ";\n")
             cur.execute(command)
 
+
+
+#Create a connection to the pet database
 conn = psycopg2.connect(
     host='localhost',
     port=54320,
-    dbname='user_db',
+    dbname='{{val}}_db',
     user='postgres',
+    password='postgres',
 )
-
 conn.autocommit = True
 
 cur = conn.cursor()
 
-#Run Scripts for user DB
-executeScriptsFromFile("SQLFiles/user_init.sql")
-cur.execute("Select * from users")
+#Run Scripts for pet DB
+executeScriptsFromFile("SQLFiles/{{val}}-init.sql")
+cur.execute("Select * from {{val}}Table")
 x = cur.fetchall()
 print(x)
 
 cur.close()
-
 conn.close()

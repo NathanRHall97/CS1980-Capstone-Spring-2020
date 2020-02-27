@@ -4,17 +4,24 @@ from master_yaml import MasterYaml, yaml_to_dict, merge_dicts
 from yaml import dump
 from pystache_engine import PystacheEngine
 from sys import exit
+import yaml
 
 # INPUT FILE PATHS
 MICROSERVICE_IP_ADDRESS = 'ip_address.json'
 BASE_API_FILE = 'config/api.yaml'
 BASE_DOCKERCOMPOSE = 'config/dockercompose.yaml'
 MUSTACHE = "microservices/api_gateway/templates/gateway.mustache"
+DB_MUSTACHE = 'database/Templates/PYSQL.mustache'
+BASH_MUSTACHE = 'database/Templates/Bash.mustache'
 
 # OUTPUT FILE PATHS
 OUTPUT_API = 'api_gateway.yaml'
 SWAGGER_MICROSERVICE_DIR = 'microservices/ui/'
 OUTPUT_GATEWAY = 'microservices/api_gateway/api_gateway.py'
+OUTPUT_SQL = 'database/Scripts/SQLFiles/'
+OUTPUT_PYSQL = 'database/Scripts/'
+OUTPUT_BASH = 'database/Scripts/dbsetup'
+OUTPUT_WIN_BASH = 'database/Scripts/Windows_dbsetup'
 
 # MIRCROSERVICES DIRECTORY
 MICROSERVICES_DIR = 'microservices/'
@@ -82,8 +89,47 @@ def make_dockercompose_file(microservices_dict, compose_dict):
         if(name == GATEWAY_NAME):
             new_microservice[name]['ports'] = [(DEFAULT_PORT+':'+DEFAULT_PORT)] # api gateway listens on 8080
         compose_dict.add('services', new_microservice)
+    #Database service written in
+    database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": '172.16.238.9'}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
+    compose_dict.add('services', database_service)
+
     compose_dict.write_me_to_file('docker-compose.yaml')
 
+#Uses a psytache template to create the python-init file
+def make_pysql(service):
+    my_dict = {'val': service}
+    pysql_engine = PystacheEngine()
+    pysql_engine.load_dict(my_dict)
+    pysql_engine.render_write(DB_MUSTACHE, OUTPUT_PYSQL+service+"-init.py")
+
+#Uses a psytache template to create the bash file
+def make_bash(list_of_keys):
+    #Convert our list to a dictionary of keys to use with pystache engine
+    db_dict = dict()
+    db_dict = {'services':list_of_keys}
+    print(db_dict)
+    bash_engine = PystacheEngine()
+    bash_engine.load_dict(db_dict)
+    bash_engine.render_write(BASH_MUSTACHE, OUTPUT_BASH)
+
+
+def make_db_files(get_yaml_file):
+    #Load yaml file
+    with open(get_yaml_file) as file:
+        info = yaml.full_load(file)
+        for item, inf in info.items():
+            #Microservice needs a DB
+            if item == 'definitions':
+                list_of_keys = list(inf.keys())
+                for i in range(len(list_of_keys)):
+                    service = list_of_keys[i]
+                    #print(service)
+                    write_file = open(OUTPUT_SQL+service+".sql", 'w')
+                    write_file.write("--SQL File for " + service + " microservice")
+                    #Create Python Files to execute SQL Files
+                    make_pysql(service)
+                #Create Bash Script for easy Database Initialization
+                make_bash(list_of_keys)
 
 # Main application logic
 def main():
@@ -116,6 +162,13 @@ def main():
     pyeng = PystacheEngine()
     pyeng.convert_yamls_pystache(api_paths, microservice_ip_dict, {'port': ':'+DEFAULT_PORT})
     pyeng.render_write(MUSTACHE, OUTPUT_GATEWAY)
+
+    make_db_files(OUTPUT_API)
+
+
+
+
+
 
 if __name__== '__main__':
     main()
