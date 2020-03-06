@@ -40,11 +40,14 @@ def get_next_petID():
     cursor = conn.cursor()
 
     # Execute Query that searches through the petIds in petTable and returns the last petID
-    cursor.execute("select petid from petTable order by petid desc limit 1")
-    petID = cursor.fetchone()[0]
-
-    # increment the petID to get a new one
-    next_pet_id = int(petID) + 1
+    cursor.execute("select id from petTable order by id desc limit 1")
+    petID = cursor.fetchone()
+    if petID is None:
+        next_pet_id = 0
+        # increment the petID to get a new one
+    else:
+        get_id = petID[0]
+        next_pet_id = int(get_id) + 1
 
     cursor.close()
     conn.close()
@@ -64,15 +67,15 @@ def update_pet():
         status = request.form.get('status')
 
         # Insert attributes into table
-        query = "insert into petTable (petID, petspecies, petsubspecies, petname, petstatus) Values(%s, %s, %s, %s, %s)"
-        values = (petId, species, subspecies, name, status)
+        query = "insert into petTable (id, name, status, species, subspecies) Values(%s, %s, %s, %s, %s)"
+        values = (petId, name, status, species, subspecies)
         conn = create_connection()
         cursor = conn.cursor()
         cursor.execute(query, values)
         conn.commit()
 
         # Return Value inserted
-        cursor.execute("Select * from petTable where petID = {}".format(petId))
+        cursor.execute("Select * from petTable where id = {}".format(petId))
         x = cursor.fetchall()
         conn.close()
         cursor.close()
@@ -91,7 +94,7 @@ def find_by_id(petId):
         conn = create_connection()
         cursor = conn.cursor()
         # Return Value
-        cursor.execute("Select * from petTable where petID = {}".format(x))
+        cursor.execute("Select * from petTable where id = {}".format(x))
         x = cursor.fetchall()
         conn.close()
         cursor.close()
