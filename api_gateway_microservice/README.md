@@ -5,10 +5,10 @@
 
 ## How to run:
 1. Install pystache module to read/write from mustache templates `pip install pystache`
-2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs
-3. Follow instructions in `database` directory to setup database server
-4. Run newly generated API gateway server with `python api_gateway.py`
-5. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
+2. Run `docker pull postgres` to get the postgres image for the database
+2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs and database files
+3. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
+4. Open a new terminal and run `bash database/Scripts/dbsetup` to initialize database
 
 ## Notes:
 1. Default configuration information is in `config/` directory.
