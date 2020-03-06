@@ -19,14 +19,24 @@ def create_connection():
     )
     return connection
 
+#Takes tuple results as an input, maps each row to its key, and returns the correct json object
+def tuple_to_json(tuple):
+    keys = ('id', 'name', 'role')
+    results = []
+    for row in tuple:
+        results.append(dict(zip(keys, row)))
+    return results
+
+
 
 def get_all_users():
     conn = create_connection()
     cursor = conn.cursor()
     cursor.execute("Select * from userTable")
     x = cursor.fetchall()
+    results = tuple_to_json(x)
     cursor.close()
-    return x
+    return results
 
 def get_next_userID():
     conn = create_connection()
@@ -60,7 +70,7 @@ def get():
         cid = int(request.args.get('cid'))
         return json.dumps((cid, CUSTOMERS[cid]))
     x = get_all_users()
-    return json.dumps(x)
+    return json.dumps(x, indent=1)
 
 
 @app.route("/user/<cid>", methods=['GET'])
@@ -75,10 +85,11 @@ def get_user(cid):
         # Return Value
         cursor.execute("Select * from userTable where id = {}".format(x))
         x = cursor.fetchall()
+        result = tuple_to_json(x)
         conn.close()
         cursor.close()
 
-        return json.dumps(x)
+        return json.dumps(result, indent=1)
     else:
         abort(404)
 
@@ -102,10 +113,11 @@ def register_customer():
     #pull the new customer from DB and return it
     cursor.execute("Select * from userTable where id = {}".format(cid))
     x = cursor.fetchall()
+    result = tuple_to_json(x)
     conn.close()
     cursor.close()
 
-    return json.dumps(x)  # json.dumps((cid, CUSTOMERS[cid]))
+    return json.dumps(result, indent=1)  # json.dumps((cid, CUSTOMERS[cid]))
 
 
 if __name__ == "__main__":

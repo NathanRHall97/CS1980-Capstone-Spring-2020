@@ -22,6 +22,13 @@ def create_connection():
     )
     return connection
 
+#Takes tuple results as an input, maps each row to its key, and returns the correct json object
+def tuple_to_json(tuple):
+    keys = ('id', 'name', 'status', 'species', 'subspecies', 'status')
+    results = []
+    for row in tuple:
+        results.append(dict(zip(keys, row)))
+    return results
 
 # Functions that calls pet_db and returns all the pets
 def get_all_pets():
@@ -29,9 +36,10 @@ def get_all_pets():
     cursor = conn.cursor()
     cursor.execute("Select * from petTable")
     x = cursor.fetchall()
+    results = tuple_to_json(x)
     cursor.close()
     conn.close()
-    return x
+    return results
 
 
 # Returns the next free petID to use
@@ -77,13 +85,14 @@ def update_pet():
         # Return Value inserted
         cursor.execute("Select * from petTable where id = {}".format(petId))
         x = cursor.fetchall()
+        results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(x)
+        return json.dumps(results, indent=1)
 
     # Get all pets
     z = get_all_pets()
-    return json.dumps(z)
+    return json.dumps(z, indent=1)
 
 
 @app.route("/pet/<petId>", methods=['GET'])
@@ -96,9 +105,10 @@ def find_by_id(petId):
         # Return Value
         cursor.execute("Select * from petTable where id = {}".format(x))
         x = cursor.fetchall()
+        results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(x)
+        return json.dumps(results, indent=1)
     else:
         abort(404)
 
