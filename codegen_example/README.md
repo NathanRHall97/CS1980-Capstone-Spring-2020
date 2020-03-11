@@ -1,8 +1,7 @@
 ## How to use:
-1. install pystache module to read/write from mustache templates `pip install pystache`
-2. install prance module to parse OpenAPI documentation `pip install prance`
-3. from `codegen_example` directory, run server generator `python server_generator.py`
-4. server generator will create a generated flask server file `generated_server.py`--run that server with `python generated_server.py`
+1. Install requirements from root folder Documentation `pip install -r requirements.txt`
+2. from `codegen_example` directory, run server generator `python server_generator.py`
+3. server generator will create a generated flask server file `generated_server.py`--run that server with `python generated_server.py`
 
 ## example:
 ```
