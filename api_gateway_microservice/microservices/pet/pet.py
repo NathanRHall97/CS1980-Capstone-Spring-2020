@@ -22,6 +22,13 @@ def create_connection():
     )
     return connection
 
+#Takes tuple results as an input, maps each row to its key, and returns the correct json object
+def tuple_to_json(tuple):
+    keys = ('id', 'name', 'status', 'species', 'subspecies', 'status')
+    results = []
+    for row in tuple:
+        results.append(dict(zip(keys, row)))
+    return results
 
 # Functions that calls pet_db and returns all the pets
 def get_all_pets():
@@ -29,9 +36,10 @@ def get_all_pets():
     cursor = conn.cursor()
     cursor.execute("Select * from petTable")
     x = cursor.fetchall()
+    results = tuple_to_json(x)
     cursor.close()
     conn.close()
-    return x
+    return results
 
 
 # Returns the next free petID to use
@@ -40,11 +48,14 @@ def get_next_petID():
     cursor = conn.cursor()
 
     # Execute Query that searches through the petIds in petTable and returns the last petID
-    cursor.execute("select petid from petTable order by petid desc limit 1")
-    petID = cursor.fetchone()[0]
-
-    # increment the petID to get a new one
-    next_pet_id = int(petID) + 1
+    cursor.execute("select id from petTable order by id desc limit 1")
+    petID = cursor.fetchone()
+    if petID is None:
+        next_pet_id = 0
+        # increment the petID to get a new one
+    else:
+        get_id = petID[0]
+        next_pet_id = int(get_id) + 1
 
     cursor.close()
     conn.close()
@@ -64,23 +75,24 @@ def update_pet():
         status = request.form.get('status')
 
         # Insert attributes into table
-        query = "insert into petTable (petID, petspecies, petsubspecies, petname, petstatus) Values(%s, %s, %s, %s, %s)"
-        values = (petId, species, subspecies, name, status)
+        query = "insert into petTable (id, name, status, species, subspecies) Values(%s, %s, %s, %s, %s)"
+        values = (petId, name, status, species, subspecies)
         conn = create_connection()
         cursor = conn.cursor()
         cursor.execute(query, values)
         conn.commit()
 
         # Return Value inserted
-        cursor.execute("Select * from petTable where petID = {}".format(petId))
+        cursor.execute("Select * from petTable where id = {}".format(petId))
         x = cursor.fetchall()
+        results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(x)
+        return json.dumps(results, indent=1)
 
     # Get all pets
     z = get_all_pets()
-    return json.dumps(z)
+    return json.dumps(z, indent=1)
 
 
 @app.route("/pet/<petId>", methods=['GET'])
@@ -91,11 +103,12 @@ def find_by_id(petId):
         conn = create_connection()
         cursor = conn.cursor()
         # Return Value
-        cursor.execute("Select * from petTable where petID = {}".format(x))
+        cursor.execute("Select * from petTable where id = {}".format(x))
         x = cursor.fetchall()
+        results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(x)
+        return json.dumps(results, indent=1)
     else:
         abort(404)
 

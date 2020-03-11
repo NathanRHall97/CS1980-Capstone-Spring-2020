@@ -1,0 +1,1 @@
+##All scripts needed to build proper database

@@ -13,6 +13,7 @@ BASE_DOCKERCOMPOSE = 'config/dockercompose.yaml'
 MUSTACHE = "microservices/api_gateway/templates/gateway.mustache"
 DB_MUSTACHE = 'database/Templates/PYSQL.mustache'
 BASH_MUSTACHE = 'database/Templates/Bash.mustache'
+SQL_MUSTACHE = 'database/Templates/SQL.mustache'
 
 # OUTPUT FILE PATHS
 OUTPUT_API = 'api_gateway.yaml'
@@ -97,7 +98,7 @@ def make_dockercompose_file(microservices_dict, compose_dict):
 
 #Uses a psytache template to create the python-init file
 def make_pysql(service):
-    my_dict = {'val': service}
+    my_dict = {'val': service.lower()}
     pysql_engine = PystacheEngine()
     pysql_engine.load_dict(my_dict)
     pysql_engine.render_write(DB_MUSTACHE, OUTPUT_PYSQL+service+"-init.py")
@@ -107,10 +108,18 @@ def make_bash(list_of_keys):
     #Convert our list to a dictionary of keys to use with pystache engine
     db_dict = dict()
     db_dict = {'services':list_of_keys}
-    print(db_dict)
+    #print(db_dict)
     bash_engine = PystacheEngine()
     bash_engine.load_dict(db_dict)
     bash_engine.render_write(BASH_MUSTACHE, OUTPUT_BASH)
+
+def make_SQL(service, list_of_attributes):
+    db_dict = dict()
+    db_dict = {'service': service.lower(), 'attributes': list_of_attributes}
+    #print(db_dict)
+    SQL_Engine = PystacheEngine()
+    SQL_Engine.load_dict(db_dict)
+    SQL_Engine.render_write(SQL_MUSTACHE, OUTPUT_SQL+service+"-init.sql")
 
 
 def make_db_files(get_yaml_file):
@@ -123,12 +132,50 @@ def make_db_files(get_yaml_file):
                 list_of_keys = list(inf.keys())
                 for i in range(len(list_of_keys)):
                     service = list_of_keys[i]
-                    #print(service)
-                    write_file = open(OUTPUT_SQL+service+".sql", 'w')
-                    write_file.write("--SQL File for " + service + " microservice")
+                    #create a dictionary of details/type/..
+                    dict_to_use = inf[service]['properties']
+                    list_of_attributes = []
+                    #Create key, type pairs and insert them into a list
+                    for x, dict in dict_to_use.items():
+                        ks = list(dict_to_use.keys())
+                        temp = {}
+                        temp['key'] = x
+                        #Since were creating an SQL file string -> varchar(20)
+                        if dict['type'] == 'string':
+                            #if its not the last value, we use a comma
+                            if x != ks[-1]:
+                                temp['type'] = 'varchar(20)'
+                                temp['comma'] = ','
+                                list_of_attributes.append(temp)
+                            #last value, dont add a comma into the dict so that SQL parses correctly
+                            else:
+                                temp['type'] = 'varchar(20)'
+                                list_of_attributes.append(temp)
+                        else:
+                            if x != ks[-1]:
+                                temp['type'] = dict['type']
+                                temp['comma'] = ','
+                                # check to see if its id, if so make it primary key
+                                if x == 'id':
+                                    temp['pk'] = 'PRIMARY KEY'
+                                list_of_attributes.append(temp)
+                            else:
+                                temp['type'] = dict['type']
+                                if x == 'id':
+                                    temp['pk'] = 'PRIMARY KEY'
+                                list_of_attributes.append(temp)
+
+                    #Create .SQL Files
+                    make_SQL(service, list_of_attributes)
+
                     #Create Python Files to execute SQL Files
                     make_pysql(service)
+
                 #Create Bash Script for easy Database Initialization
+                #simple loop to make all keys lowercase
+                for key in range(len(list_of_keys)):
+                    k = list_of_keys[key]
+                    list_of_keys[key] = k.lower()
                 make_bash(list_of_keys)
 
 # Main application logic
