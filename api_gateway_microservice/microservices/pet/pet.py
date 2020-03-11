@@ -5,10 +5,10 @@ import psycopg2
 
 app = Flask(__name__)
 
-Pets = {0: {'id': 0, 'name': 'dog', 'status': 'sold'},
-        1: {'id': 1, 'name': 'cat', 'status': 'pending'},
-        2: {'id': 2, 'name': 'lizard', 'status': 'pending'}
-        }
+#HTTP RETURN CODES
+HTTP_Succesful = 200
+HTTP_Created = 201
+HTTP_NotFound = 404
 
 
 # Function to create a connection and return it
@@ -63,7 +63,7 @@ def get_next_petID():
     return next_pet_id
 
 
-@app.route("/pet", methods=['GET', 'POST', 'PATCH'])
+@app.route("/pet", methods=['GET', 'POST'])
 def update_pet():
     if request.method == 'POST':
 
@@ -88,11 +88,39 @@ def update_pet():
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Created
 
     # Get all pets
     z = get_all_pets()
-    return json.dumps(z, indent=1)
+    return json.dumps(z, indent=1), HTTP_Succesful
+
+@app.route("/pet", methods=['PATCH'])
+def patch_pet():
+    if request.method == 'PATCH':
+
+        petId = request.form.get('id')
+        species = request.form.get('species')
+        subspecies = request.form.get('subspecies')
+        name = request.form.get('name')
+        status = request.form.get('status')
+
+        query = "update petTable set name = %s, status = %s, species = %s, subspecies = %s where id = %s"
+        values = (name, species, status, subspecies, petId)
+
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+        # Return Value inserted
+        cursor.execute("Select * from petTable where id = {}".format(petId))
+        x = cursor.fetchall()
+        results = tuple_to_json(x)
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1), HTTP_Created
+
+
 
 
 @app.route("/pet/<petId>", methods=['GET'])
@@ -108,9 +136,29 @@ def find_by_id(petId):
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Succesful
     else:
-        abort(404)
+        abort(HTTP_NotFound)
+
+@app.route("/pet/<petId>", methods=['DELETE'])
+def delete_pet(petId):
+    x = int(petId)
+    pet_len = get_next_petID()
+    if pet_len > x >= 0:
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute("Select * from petTable where id = {}".format(x))
+        get_pet = cursor.fetchall()
+        results = tuple_to_json(get_pet)
+
+        cursor.execute("Delete from petTable where id = {}".format(x))
+        conn.commit()
+
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1), HTTP_Succesful
+    else:
+        abort(HTTP_NotFound)
 
 
 if __name__ == "__main__":
