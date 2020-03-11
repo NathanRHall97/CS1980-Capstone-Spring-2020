@@ -5,10 +5,10 @@ import psycopg2
 
 app = Flask(__name__)
 
-Pets = {0: {'id': 0, 'name': 'dog', 'status': 'sold'},
-        1: {'id': 1, 'name': 'cat', 'status': 'pending'},
-        2: {'id': 2, 'name': 'lizard', 'status': 'pending'}
-        }
+#HTTP RETURN CODES
+HTTP_Succesful = 200
+HTTP_Created = 201
+HTTP_NotFound = 404
 
 
 # Function to create a connection and return it
@@ -88,11 +88,11 @@ def update_pet():
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Created
 
     # Get all pets
     z = get_all_pets()
-    return json.dumps(z, indent=1)
+    return json.dumps(z, indent=1), HTTP_Succesful
 
 @app.route("/pet", methods=['PATCH'])
 def patch_pet():
@@ -118,7 +118,7 @@ def patch_pet():
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Created
 
 
 
@@ -136,9 +136,9 @@ def find_by_id(petId):
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Succesful
     else:
-        abort(404)
+        abort(HTTP_NotFound)
 
 @app.route("/pet/<petId>", methods=['DELETE'])
 def delete_pet(petId):
@@ -156,9 +156,9 @@ def delete_pet(petId):
 
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Succesful
     else:
-        abort(404)
+        abort(HTTP_NotFound)
 
 
 if __name__ == "__main__":

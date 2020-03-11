@@ -5,7 +5,10 @@ import psycopg2
 
 app = Flask(__name__)
 
-CUSTOMERS = {0: 'Amy', 1: 'Bill', 2: 'Caroline'}  # should be replaced by proper db
+#HTTP RETURN CODES
+HTTP_Succesful = 200
+HTTP_Created = 201
+HTTP_NotFound = 404
 
 
 # Function to create a connection and return it
@@ -65,12 +68,8 @@ def aa():
 
 @app.route("/user", methods=['GET'])
 def get():
-    #don't really know where this if statement comes into play?
-    if request.args.get('cid'):
-        cid = int(request.args.get('cid'))
-        return json.dumps((cid, CUSTOMERS[cid]))
     x = get_all_users()
-    return json.dumps(x, indent=1)
+    return json.dumps(x, indent=1), HTTP_Succesful
 
 
 @app.route("/user/<cid>", methods=['GET'])
@@ -89,7 +88,7 @@ def get_user(cid):
         conn.close()
         cursor.close()
 
-        return json.dumps(result, indent=1)
+        return json.dumps(result, indent=1), HTTP_Succesful
     else:
         abort(404)
 
@@ -109,7 +108,7 @@ def delete_pet(cId):
 
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Succesful
     else:
         abort(404)
 
@@ -137,7 +136,7 @@ def register_customer():
     conn.close()
     cursor.close()
 
-    return json.dumps(result, indent=1)  # json.dumps((cid, CUSTOMERS[cid]))
+    return json.dumps(result, indent=1), HTTP_Created
 
 @app.route("/user", methods=['PATCH'])
 def patch_user():
@@ -161,7 +160,7 @@ def patch_user():
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1)
+        return json.dumps(results, indent=1), HTTP_Created
 
 
 if __name__ == "__main__":
