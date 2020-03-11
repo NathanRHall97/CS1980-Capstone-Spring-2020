@@ -14,7 +14,7 @@ HTTP_NotFound = 404
 # Function to create a connection and return it
 def create_connection():
     connection = psycopg2.connect(
-        host='172.16.238.9',  # This is the subnet IP for the Server, declared in docker-compose file.
+        host='172.16.238.10',  # This is the subnet IP for the Server, declared in docker-compose file.
         port=5432,
         dbname='pet_db',
         user='postgres',
