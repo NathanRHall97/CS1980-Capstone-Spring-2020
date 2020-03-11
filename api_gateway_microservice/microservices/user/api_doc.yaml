@@ -62,7 +62,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: customerId
+        - name: cId
           in: path
           description: The id property of a customer registered with the store.
           required: true
@@ -74,6 +74,27 @@ paths:
             $ref: '#/definitions/User'
         '404':
           description: A customer with that id was not found.
+    delete:
+      tags:
+        - user
+      summary: Deletes a user
+      description: Returns the user tuple that was deleted
+      operationId: delete_user
+      produces:
+        - application/json
+      parameters:
+        - name: cId
+          in: path
+          description: The id property of user to delete.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Returns the user deleted with provided id property.
+          schema:
+            $ref: '#/definitions/User'
+        '404':
+          description: The user was not found.
 
 definitions:
 

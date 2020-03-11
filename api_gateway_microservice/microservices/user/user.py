@@ -93,6 +93,26 @@ def get_user(cid):
     else:
         abort(404)
 
+@app.route("/user/<cId>", methods=['DELETE'])
+def delete_pet(cId):
+    x = int(cId)
+    user_len = get_next_userID()
+    if user_len > x >= 0:
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute("Select * from userTable where id = {}".format(x))
+        get_user = cursor.fetchall()
+        results = tuple_to_json(get_user)
+
+        cursor.execute("Delete from userTable where id = {}".format(x))
+        conn.commit()
+
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1)
+    else:
+        abort(404)
+
 
 @app.route("/user", methods=['POST'])
 def register_customer():

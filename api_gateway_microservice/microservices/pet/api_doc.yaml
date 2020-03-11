@@ -59,7 +59,7 @@ paths:
       tags:
         - pet
       summary: Returns a pet
-      description: Returns a single pet registered 
+      description: Returns a single pet registered
       operationId: find_by_id
       produces:
         - application/json
@@ -76,7 +76,27 @@ paths:
             $ref: '#/definitions/Pet'
         '404':
           description: The pet was not found.
-          
+    delete:
+      tags:
+        - pet
+      summary: Deletes a pet
+      description: Returns the pet tuple that was deleted
+      operationId: delete_pet
+      produces:
+        - application/json
+      parameters:
+        - name: petId
+          in: path
+          description: The id property of pet to delete.
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Returns the pet deleted with provided id property.
+          schema:
+            $ref: '#/definitions/Pet'
+        '404':
+          description: The pet was not found.
 definitions:
 
   Pet:

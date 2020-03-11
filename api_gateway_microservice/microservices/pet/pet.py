@@ -112,6 +112,26 @@ def find_by_id(petId):
     else:
         abort(404)
 
+@app.route("/pet/<petId>", methods=['DELETE'])
+def delete_pet(petId):
+    x = int(petId)
+    pet_len = get_next_petID()
+    if pet_len > x >= 0:
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute("Select * from petTable where id = {}".format(x))
+        get_pet = cursor.fetchall()
+        results = tuple_to_json(get_pet)
+
+        cursor.execute("Delete from petTable where id = {}".format(x))
+        conn.commit()
+
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1)
+    else:
+        abort(404)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
