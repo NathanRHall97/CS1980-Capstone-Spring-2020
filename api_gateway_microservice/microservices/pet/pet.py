@@ -63,7 +63,7 @@ def get_next_petID():
     return next_pet_id
 
 
-@app.route("/pet", methods=['GET', 'POST', 'PATCH'])
+@app.route("/pet", methods=['GET', 'POST'])
 def update_pet():
     if request.method == 'POST':
 
@@ -93,6 +93,34 @@ def update_pet():
     # Get all pets
     z = get_all_pets()
     return json.dumps(z, indent=1)
+
+@app.route("/pet", methods=['PATCH'])
+def patch_pet():
+    if request.method == 'PATCH':
+
+        petId = request.form.get('id')
+        species = request.form.get('species')
+        subspecies = request.form.get('subspecies')
+        name = request.form.get('name')
+        status = request.form.get('status')
+
+        query = "update petTable set name = %s, status = %s, species = %s, subspecies = %s where id = %s"
+        values = (name, species, status, subspecies, petId)
+
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+        # Return Value inserted
+        cursor.execute("Select * from petTable where id = {}".format(petId))
+        x = cursor.fetchall()
+        results = tuple_to_json(x)
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1)
+
+
 
 
 @app.route("/pet/<petId>", methods=['GET'])

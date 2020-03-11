@@ -139,6 +139,30 @@ def register_customer():
 
     return json.dumps(result, indent=1)  # json.dumps((cid, CUSTOMERS[cid]))
 
+@app.route("/user", methods=['PATCH'])
+def patch_user():
+    if request.method == 'PATCH':
+
+        userId = request.form.get('id')
+        name = request.form.get('name')
+        role = request.form.get('role')
+
+        query = "update userTable set name = %s, role = %s where id = %s"
+        values = (name, role, userId)
+
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+        # Return Value inserted
+        cursor.execute("Select * from userTable where id = {}".format(userId))
+        x = cursor.fetchall()
+        results = tuple_to_json(x)
+        conn.close()
+        cursor.close()
+        return json.dumps(results, indent=1)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)

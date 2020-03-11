@@ -36,6 +36,25 @@ paths:
             $ref: '#/definitions/User'
         '400':
           description: Invalid customer input.
+    patch:
+      tags:
+        - user
+      summary: Update a currently existing user
+      description: Update a users information for the store
+      operationId: patch_user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successfully updated the current users' information with the store. The list of the new user information is returned.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        '400':
+          description: Invalid user input.
     get:
       tags:
         - user
