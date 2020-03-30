@@ -5,7 +5,7 @@
   4. If you create test files for a microservice, create a test directory and put the test file in that.
 
 ## How to run:
-1. Install pystache module to read/write from mustache templates `pip install pystache`
+1. Install requirements from root folder Documentation `pip install -r requirements.txt`
 2. Run `docker pull postgres` to get the postgres image for the database
 2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs and database files
 3. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
