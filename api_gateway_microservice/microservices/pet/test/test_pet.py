@@ -1,7 +1,5 @@
 import requests
-import pytest
 import json
-import time
 
 def test_get_pets():
     url = "http://172.16.238.7:8080/pet"

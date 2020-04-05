@@ -2,6 +2,7 @@
   1. New microservice directory must be placed as a sub-directory within `microservices/` directory.
   2. New microservice should be locally running at `0.0.0.0`.
   3. New microservice's OpenAPI file must be named `api_doc.yaml` or `api_doc.yml`.
+  4. If you create test files for a microservice, create a test directory and put the test file in that.
 
 ## How to run:
 1. Install pystache module to read/write from mustache templates `pip install pystache`
