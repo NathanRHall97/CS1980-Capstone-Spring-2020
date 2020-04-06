@@ -56,7 +56,7 @@ def test_delete_user():
  
 # Makes sure that we can't get deleted information for USER
 def test_get_deleted_user():
-    url = "http://172.16.238.7:8080/user/0"
+    url = "http://172.16.238.8:8080/user/0"
     # Send a GET request
     response = requests.get(url)
     print(response.json())
@@ -64,7 +64,7 @@ def test_get_deleted_user():
 
 # Tests to see if a negative integer will throw an error. In user.py user_len(id) must be > 0.
 def test_negative_id_user():
-    url = "http://172.16.238.7:8080/user/-1"
+    url = "http://172.16.238.8:8080/user/-1"
     response = requests.get(url)
     print(response.json())
     assert response.status_code == 404
@@ -72,7 +72,7 @@ def test_negative_id_user():
 # added edge case test (USER)
 # Tests to see if a negative integer will delete or modify anything. In user.py user_len(id) must be > 0.
 def test_negative_id_delete_user():
-    url = "http://172.16.238.7:8080/user/-1"
+    url = "http://172.16.238.8:8080/user/-1"
     # Send a GET request
     response = requests.delete(url)
     print(response.json())
@@ -84,7 +84,7 @@ def test_negative_id_delete_user():
 def test_header_user():
     mimetype = 'application/json'
     headers = { }
-    url = "http://172.16.238.7:8080/user"
+    url = "http://172.16.238.8:8080/user"
     content = {"id": 0, "name": "jerry", "role": "Customer"}
 
     response = requests.post(url, data=json.dumps(content), headers=headers)
@@ -114,7 +114,7 @@ def test_content_user():
         'Content-Type': mimetype,
         'Accept': mimetype
     }
-    url = "http://172.16.238.7:8080/user"
+    url = "http://172.16.238.8:8080/user"
     content = {}
 
     response = requests.post(url, data=json.dumps(content), headers=headers)
