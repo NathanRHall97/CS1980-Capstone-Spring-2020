@@ -53,6 +53,14 @@ def test_delete_user():
     response = requests.delete(url)
     print(response.json())
     assert response.status_code == 200
+ 
+# Makes sure that we can't get deleted information for USER
+def test_get_deleted_user():
+    url = "http://172.16.238.7:8080/user/0"
+    # Send a GET request
+    response = requests.get(url)
+    print(response.json())
+    assert response.status_code == 404
 
 # Tests to see if a negative integer will throw an error. In user.py user_len(id) must be > 0.
 def test_negative_id_user():
@@ -97,7 +105,7 @@ def test_url_user():
 
     response = requests.post(url, data = json.dumps(content), headers = headers)
     print(response.json())
-    assert response.status_code == 200
+    assert response.status_code == 405
 # added test (USER)
 # Makes sure that content is necessary and throws a 405 error without one.
 def test_content_user():
@@ -111,4 +119,4 @@ def test_content_user():
 
     response = requests.post(url, data=json.dumps(content), headers=headers)
     print(response.json())
-    assert response.status_code == 200
+    assert response.status_code == 405
