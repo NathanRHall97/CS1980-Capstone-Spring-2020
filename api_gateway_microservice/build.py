@@ -5,6 +5,7 @@ from yaml import dump
 from pystache_engine import PystacheEngine
 from sys import exit
 import yaml
+import os
 
 # INPUT FILE PATHS
 MICROSERVICE_IP_ADDRESS = 'ip_address.json'
@@ -23,6 +24,7 @@ OUTPUT_SQL = 'database/Scripts/SQLFiles/'
 OUTPUT_PYSQL = 'database/Scripts/'
 OUTPUT_BASH = 'database/Scripts/dbsetup'
 OUTPUT_WIN_BASH = 'database/Scripts/Windows_dbsetup'
+OUTPUT_TEST_FILE = '/test/test.py'
 
 # MIRCROSERVICES DIRECTORY
 MICROSERVICES_DIR = 'microservices/'
@@ -178,6 +180,44 @@ def make_db_files(get_yaml_file):
                     list_of_keys[key] = k.lower()
                 make_bash(list_of_keys)
 
+def write_into_test(microservice_test):
+    reader = open(microservice_test, "r")
+    #print(reader.read())
+    test_file = open('../../test/test.py', "a")
+    test_file.write('\n')
+    test_file.write(reader.read())
+    test_file.close()
+    reader.close()
+
+def make_master_test_file():
+    #print(os.getcwd())
+    #Go into microservices
+    os.chdir('microservices')
+
+    #loop through each service in microservices
+    for service in os.listdir():
+        #Go into the microservice directory
+        os.chdir(service)
+
+        #loop through files in the directory
+        for d in os.listdir():
+            #check for test directory
+            if d == 'test':
+                os.chdir('test')
+
+                #List the test directory and write the test files
+                for test_file in os.listdir():
+                    cwd = os.getcwd()
+                    test_ = cwd + '/' + test_file
+                    write_into_test(test_)
+                os.chdir('..')
+        os.chdir('..')
+
+    #Leave Microservice Directory and return function.
+    os.chdir('..')
+
+
+
 # Main application logic
 def main():
     # Load base API
@@ -211,7 +251,7 @@ def main():
     pyeng.render_write(MUSTACHE, OUTPUT_GATEWAY)
 
     make_db_files(OUTPUT_API)
-
+    make_master_test_file()
 
 
 
