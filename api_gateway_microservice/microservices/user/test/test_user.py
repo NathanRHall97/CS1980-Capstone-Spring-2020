@@ -106,7 +106,7 @@ def test_content_user():
         'Content-Type': mimetype,
         'Accept': mimetype
     }
-    url = ""
+    url = "http://172.16.238.7:8080/user"
     content = {}
 
     response = requests.post(url, data=json.dumps(content), headers=headers)
