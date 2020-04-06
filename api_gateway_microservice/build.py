@@ -184,8 +184,8 @@ def write_into_test(microservice_test):
     reader = open(microservice_test, "r")
     #print(reader.read())
     test_file = open('../../test/test.py', "a")
-    test_file.write(reader.read())
     test_file.write('\n')
+    test_file.write(reader.read())
     test_file.close()
     reader.close()
 
@@ -210,10 +210,12 @@ def make_master_test_file():
                     cwd = os.getcwd()
                     test_ = cwd + '/' + test_file
                     write_into_test(test_)
-
                 os.chdir('..')
         os.chdir('..')
-        #print(os.getcwd())
+
+    #Leave Microservice Directory and return function.
+    os.chdir('..')
+
 
 
 # Main application logic
@@ -250,7 +252,6 @@ def main():
 
     make_db_files(OUTPUT_API)
     make_master_test_file()
-
 
 
 
