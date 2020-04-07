@@ -83,6 +83,18 @@ def assign_IPs(ip_gen, list_microservices):
         ip_adds[microservice] = next(ip_gen) # assign unique IP to each
     return ip_adds
 
+#Returns a dynamic IP for the database service
+def get_db_ip(microservice_ip_dict):
+    last_item = microservice_ip_dict.popitem()
+    last_ip = list(last_item[1])
+    ip_to_add = int(last_ip[-1])
+    ip_to_add += 1
+    ip_to_place = str(ip_to_add)
+    last_ip[-1] = ip_to_place
+    return_ip = ''.join(last_ip)
+    return return_ip
+
+
 # Takes a dict of microservice: IP address and a dict of docker-compose info and builds a new docker-compose.yaml
 def make_dockercompose_file(microservices_dict, compose_dict):
     compose_dict.add('services', dict())
@@ -92,8 +104,10 @@ def make_dockercompose_file(microservices_dict, compose_dict):
         if(name == GATEWAY_NAME):
             new_microservice[name]['ports'] = [(DEFAULT_PORT+':'+DEFAULT_PORT)] # api gateway listens on 8080
         compose_dict.add('services', new_microservice)
-    #Database service written in
-    database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": '172.16.238.10'}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
+
+    # Database service written in
+    db_ip = get_db_ip(microservices_dict)
+    database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
     compose_dict.add('services', database_service)
 
     compose_dict.write_me_to_file('docker-compose.yaml')
@@ -209,7 +223,7 @@ def make_master_test_file():
                 for test_file in os.listdir():
                     cwd = os.getcwd()
                     test_ = cwd + '/' + test_file
-                    write_into_test(test_)
+                    #write_into_test(test_)
                 os.chdir('..')
         os.chdir('..')
 

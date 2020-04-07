@@ -6,9 +6,10 @@ import psycopg2
 app = Flask(__name__)
 
 #HTTP RETURN CODES
-HTTP_Succesful = 200
+HTTP_Successful = 200
 HTTP_Created = 201
 HTTP_NotFound = 404
+HTTP_MethodNotAllowed = 405
 
 
 # Function to create a connection and return it
@@ -66,7 +67,6 @@ def get_next_petID():
 @app.route("/pet", methods=['GET', 'POST'])
 def update_pet():
     if request.method == 'POST':
-
         # Get species, subspecies, name, and status from form
         petId = get_next_petID()
         species = request.form.get('species')
