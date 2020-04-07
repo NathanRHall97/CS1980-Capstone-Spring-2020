@@ -223,7 +223,7 @@ def make_master_test_file():
                 for test_file in os.listdir():
                     cwd = os.getcwd()
                     test_ = cwd + '/' + test_file
-                    #write_into_test(test_)
+                    write_into_test(test_)
                 os.chdir('..')
         os.chdir('..')
 
