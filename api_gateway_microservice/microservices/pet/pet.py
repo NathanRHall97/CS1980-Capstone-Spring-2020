@@ -139,12 +139,14 @@ def find_by_id(petId):
         # Return Value
         cursor.execute("Select * from petTable where id = {}".format(x))
         x = cursor.fetchall()
+        if not x:
+            return json.dumps('Object does not exist'), HTTP_NotFound
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
         return json.dumps(results, indent=1), HTTP_Successful
     else:
-        abort(HTTP_NotFound)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 @app.route("/pet/<petId>", methods=['DELETE'])
 def delete_pet(petId):
@@ -164,7 +166,7 @@ def delete_pet(petId):
         cursor.close()
         return json.dumps(results, indent=1), HTTP_Successful
     else:
-        abort(HTTP_NotFound)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 
 if __name__ == "__main__":

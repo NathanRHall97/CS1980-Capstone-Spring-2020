@@ -85,13 +85,16 @@ def get_user(cid):
         # Return Value
         cursor.execute("Select * from userTable where id = {}".format(x))
         x = cursor.fetchall()
+        if not x:
+            return json.dumps('Object does not exist'), HTTP_NotFound
+
         result = tuple_to_json(x)
         conn.close()
         cursor.close()
-
         return json.dumps(result, indent=1), HTTP_Successful
+
     else:
-        abort(404)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 @app.route("/user/<cId>", methods=['DELETE'])
 def delete_pet(cId):
@@ -111,7 +114,7 @@ def delete_pet(cId):
         cursor.close()
         return json.dumps(results, indent=1), HTTP_Successful
     else:
-        abort(404)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 
 @app.route("/user", methods=['POST'])
