@@ -70,7 +70,7 @@ def aa():
 @app.route("/user", methods=['GET'])
 def get():
     x = get_all_users()
-    return json.dumps(x, indent=1), HTTP_Succesful
+    return json.dumps(x, indent=1), HTTP_Successful
 
 
 @app.route("/user/<cid>", methods=['GET'])
@@ -89,7 +89,7 @@ def get_user(cid):
         conn.close()
         cursor.close()
 
-        return json.dumps(result, indent=1), HTTP_Succesful
+        return json.dumps(result, indent=1), HTTP_Successful
     else:
         abort(404)
 
@@ -109,7 +109,7 @@ def delete_pet(cId):
 
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1), HTTP_Succesful
+        return json.dumps(results, indent=1), HTTP_Successful
     else:
         abort(404)
 
@@ -121,6 +121,9 @@ def register_customer():
     name = request.form.get('name')
     role= request.form.get('role')
     cid = get_next_userID()
+
+    if name is None or role is None:
+        return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
 
     #insert values into DB
     query = "insert into userTable (id, name, role) Values(%s, %s, %s)"
@@ -146,6 +149,9 @@ def patch_user():
         userId = request.form.get('id')
         name = request.form.get('name')
         role = request.form.get('role')
+
+        if name is None or role is None:
+            return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
 
         query = "update userTable set name = %s, role = %s where id = %s"
         values = (name, role, userId)

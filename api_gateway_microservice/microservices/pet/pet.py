@@ -74,6 +74,9 @@ def update_pet():
         name = request.form.get('name')
         status = request.form.get('status')
 
+        if species is None or subspecies is None or name is None or status is None:
+            return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
+
         # Insert attributes into table
         query = "insert into petTable (id, name, status, species, subspecies) Values(%s, %s, %s, %s, %s)"
         values = (petId, name, status, species, subspecies)
@@ -92,7 +95,7 @@ def update_pet():
 
     # Get all pets
     z = get_all_pets()
-    return json.dumps(z, indent=1), HTTP_Succesful
+    return json.dumps(z, indent=1), HTTP_Successful
 
 @app.route("/pet", methods=['PATCH'])
 def patch_pet():
@@ -103,6 +106,9 @@ def patch_pet():
         subspecies = request.form.get('subspecies')
         name = request.form.get('name')
         status = request.form.get('status')
+
+        if species is None or subspecies is None or name is None or status is None:
+            return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
 
         query = "update petTable set name = %s, status = %s, species = %s, subspecies = %s where id = %s"
         values = (name, species, status, subspecies, petId)
@@ -136,7 +142,7 @@ def find_by_id(petId):
         results = tuple_to_json(x)
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1), HTTP_Succesful
+        return json.dumps(results, indent=1), HTTP_Successful
     else:
         abort(HTTP_NotFound)
 
@@ -156,7 +162,7 @@ def delete_pet(petId):
 
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1), HTTP_Succesful
+        return json.dumps(results, indent=1), HTTP_Successful
     else:
         abort(HTTP_NotFound)
 
