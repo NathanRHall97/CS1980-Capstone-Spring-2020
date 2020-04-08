@@ -92,6 +92,7 @@ def get_db_ip(microservice_ip_dict):
     ip_to_place = str(ip_to_add)
     last_ip[-1] = ip_to_place
     return_ip = ''.join(last_ip)
+    microservice_ip_dict['pet'] = last_item[1]
     return return_ip
 
 
@@ -106,7 +107,8 @@ def make_dockercompose_file(microservices_dict, compose_dict):
         compose_dict.add('services', new_microservice)
 
     # Database service written in
-    db_ip = get_db_ip(microservices_dict)
+    new_dict = microservices_dict
+    db_ip = get_db_ip(new_dict)
     database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
     compose_dict.add('services', database_service)
 
