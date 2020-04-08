@@ -6,9 +6,10 @@ import psycopg2
 app = Flask(__name__)
 
 #HTTP RETURN CODES
-HTTP_Succesful = 200
+HTTP_Successful = 200
 HTTP_Created = 201
 HTTP_NotFound = 404
+HTTP_MethodNotAllowed = 405
 
 
 # Function to create a connection and return it
@@ -69,7 +70,7 @@ def aa():
 @app.route("/user", methods=['GET'])
 def get():
     x = get_all_users()
-    return json.dumps(x, indent=1), HTTP_Succesful
+    return json.dumps(x, indent=1), HTTP_Successful
 
 
 @app.route("/user/<cid>", methods=['GET'])
@@ -84,13 +85,16 @@ def get_user(cid):
         # Return Value
         cursor.execute("Select * from userTable where id = {}".format(x))
         x = cursor.fetchall()
+        if not x:
+            return json.dumps('Object does not exist'), HTTP_NotFound
+
         result = tuple_to_json(x)
         conn.close()
         cursor.close()
+        return json.dumps(result, indent=1), HTTP_Successful
 
-        return json.dumps(result, indent=1), HTTP_Succesful
     else:
-        abort(404)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 @app.route("/user/<cId>", methods=['DELETE'])
 def delete_pet(cId):
@@ -108,9 +112,9 @@ def delete_pet(cId):
 
         conn.close()
         cursor.close()
-        return json.dumps(results, indent=1), HTTP_Succesful
+        return json.dumps(results, indent=1), HTTP_Successful
     else:
-        abort(404)
+        return json.dumps("ID not found"), HTTP_NotFound
 
 
 @app.route("/user", methods=['POST'])
@@ -120,6 +124,9 @@ def register_customer():
     name = request.form.get('name')
     role= request.form.get('role')
     cid = get_next_userID()
+
+    if name is None or role is None:
+        return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
 
     #insert values into DB
     query = "insert into userTable (id, name, role) Values(%s, %s, %s)"
@@ -145,6 +152,9 @@ def patch_user():
         userId = request.form.get('id')
         name = request.form.get('name')
         role = request.form.get('role')
+
+        if name is None or role is None:
+            return json.dumps('Method Not Allowed'), HTTP_MethodNotAllowed
 
         query = "update userTable set name = %s, role = %s where id = %s"
         values = (name, role, userId)

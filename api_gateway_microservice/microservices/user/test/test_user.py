@@ -92,21 +92,6 @@ def test_header_user():
     assert response.status_code == 405
 
 # added test (USER)
-# Makes sure that a url is necessary and throws a 405 error without one.
-def test_url_user():
-    mimetype = 'application/json'
-    headers = {
-        'Content-Type': mimetype,
-        'Accept': mimetype
-    }
-
-    url = ""
-    content = {"id": 0, "name": "jerry", "role": "Customer"}
-
-    response = requests.post(url, data = json.dumps(content), headers = headers)
-    print(response.json())
-    assert response.status_code == 405
-# added test (USER)
 # Makes sure that content is necessary and throws a 405 error without one.
 def test_content_user():
     mimetype = 'application/json'
