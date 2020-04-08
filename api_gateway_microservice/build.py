@@ -84,6 +84,7 @@ def assign_IPs(ip_gen, list_microservices):
     return ip_adds
 
 #Returns a dynamic IP for the database service
+#Gets the last microservice off the dict, reads the ip, adds one to it, and returns that ip for the db ip
 def get_db_ip(microservice_ip_dict):
     last_item = microservice_ip_dict.popitem()
     last_ip = list(last_item[1])
@@ -92,7 +93,7 @@ def get_db_ip(microservice_ip_dict):
     ip_to_place = str(ip_to_add)
     last_ip[-1] = ip_to_place
     return_ip = ''.join(last_ip)
-    microservice_ip_dict['pet'] = last_item[1]
+    microservice_ip_dict[last_item[0]] = last_item[1]
     return return_ip
 
 
@@ -196,6 +197,7 @@ def make_db_files(get_yaml_file):
                     list_of_keys[key] = k.lower()
                 make_bash(list_of_keys)
 
+#Gets the individual microservice test file passed in, appends it to the test container and returns
 def write_into_test(microservice_test):
     reader = open(microservice_test, "r")
     #print(reader.read())
