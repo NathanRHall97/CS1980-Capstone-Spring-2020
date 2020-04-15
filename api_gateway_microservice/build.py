@@ -120,7 +120,7 @@ def make_pysql(service):
     my_dict = {'val': service.lower()}
     pysql_engine = PystacheEngine()
     pysql_engine.load_dict(my_dict)
-    pysql_engine.render_write(DB_MUSTACHE, OUTPUT_PYSQL+service+"-init.py")
+    pysql_engine.render_write(DB_MUSTACHE, OUTPUT_PYSQL+service.lower()+"-init.py")
 
 #Uses a psytache template to create the bash file
 def make_bash(list_of_keys):
