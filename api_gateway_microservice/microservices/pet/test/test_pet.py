@@ -2,7 +2,7 @@ import requests
 import json
 
 def test_get_pets():
-    url = "http://172.16.238.7:8080/pet"
+    url = "http://172.16.238.5:8080/pet"
     # Send a GET request
     response = requests.get(url)
     print(response.json())
@@ -16,7 +16,7 @@ def test_post_pet():
         'Accept': mimetype
     }
 
-    url = "http://172.16.238.7:8080/pet"
+    url = "http://172.16.238.5:8080/pet"
     content = {"id": 0, "name": "gizmo",  "status": "available", "species": "dog", "subspecies": "lab"}
 
     response = requests.post(url, data = json.dumps(content), headers = headers)
@@ -25,7 +25,7 @@ def test_post_pet():
 
 #READ PET
 def test_get_pet():
-    url = "http://172.16.238.7:8080/pet/0"
+    url = "http://172.16.238.5:8080/pet/0"
     # Send a GET request
     response = requests.get(url)
     print(response.json())
@@ -38,7 +38,7 @@ def test_patch_pet():
         'Content-Type': mimetype,
         'Accept': mimetype
     }
-    url = "http://172.16.238.7:8080/pet"
+    url = "http://172.16.238.5:8080/pet"
     content = {"id": 0, "name": "gizmo",  "status": "SOLD", "species": "dog", "subspecies": "lab"}
     response = requests.patch(url, data = json.dumps(content), headers = headers)
     print(response.json())
@@ -46,7 +46,7 @@ def test_patch_pet():
 
 #DELETE PET
 def test_delete_pet():
-    url = "http://172.16.238.7:8080/pet/0"
+    url = "http://172.16.238.5:8080/pet/0"
     # Send a GET request
     response = requests.delete(url)
     print(response.json())
@@ -54,7 +54,7 @@ def test_delete_pet():
     
 # Makes sure that we can't get deleted information for PET
 def test_get_deleted_pet():
-    url = "http://172.16.238.9:8080/pet/0"
+    url = "http://172.16.238.7:8080/pet/0"
     # Send a GET request
     response = requests.get(url)
     print(response.json())
@@ -65,7 +65,7 @@ def test_get_deleted_pet():
 def test_header_pet():
     mimetype = 'application/json'
     headers = { }
-    url = "http://172.16.238.9:8080/pet"
+    url = "http://172.16.238.7:8080/pet"
     content = {"id": 0, "name": "gizmo", "status": "available", "species": "dog", "subspecies": "lab"}
 
     response = requests.post(url, data=json.dumps(content), headers=headers)
@@ -80,7 +80,7 @@ def test_content_pet():
         'Content-Type': mimetype,
         'Accept': mimetype
     }
-    url = "http://172.16.238.9:8080/pet"
+    url = "http://172.16.238.7:8080/pet"
     content = { }
     response = requests.patch(url, data=json.dumps(content), headers=headers)
     print(response.json())
@@ -88,7 +88,7 @@ def test_content_pet():
 
 # Tests to see if a negative integer will throw an error. In pet.py pet_len(id) must be > 0.
 def test_negative_id_pet():
-    url = "http://172.16.238.9:8080/pet/-1"
+    url = "http://172.16.238.7:8080/pet/-1"
     response = requests.get(url)
     print(response.json())
     assert response.status_code == 404
@@ -96,7 +96,7 @@ def test_negative_id_pet():
 # added edge case test (PET)
 # Tests to see if a negative integer will throw an error or modify/delete a pet_len that it shouldn't
 def test_negative_id_delete_pet():
-    url = "http://172.16.238.9:8080/pet/-1"
+    url = "http://172.16.238.7:8080/pet/-1"
     # Send a GET request
     response = requests.delete(url)
     print(response.json())
