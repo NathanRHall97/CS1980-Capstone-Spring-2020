@@ -20,9 +20,9 @@ SQL_MUSTACHE = 'database/Templates/SQL.mustache'
 OUTPUT_API = 'api_gateway.yaml'
 SWAGGER_MICROSERVICE_DIR = 'microservices/ui/'
 OUTPUT_GATEWAY = 'microservices/api_gateway/api_gateway.py'
-OUTPUT_SQL = 'database/Scripts/SQLFiles/'
-OUTPUT_PYSQL = 'database/Scripts/'
-OUTPUT_BASH = 'database/Scripts/dbsetup'
+OUTPUT_SQL = './SQLFiles/'
+OUTPUT_PYSQL = './'
+OUTPUT_BASH = 'dbsetup'
 OUTPUT_WIN_BASH = 'database/Scripts/Windows_dbsetup'
 OUTPUT_TEST_FILE = '/test/test.py'
 
@@ -110,7 +110,7 @@ def make_dockercompose_file(microservices_dict, compose_dict):
     # Database service written in
     new_dict = microservices_dict
     db_ip = get_db_ip(new_dict)
-    database_service = {"db_server": {'image': "postgres:11", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
+    database_service = {"db_server": {'image': "postgres", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
     compose_dict.add('services', database_service)
 
     compose_dict.write_me_to_file('docker-compose.yaml')
