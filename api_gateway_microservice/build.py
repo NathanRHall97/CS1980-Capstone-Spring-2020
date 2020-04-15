@@ -138,7 +138,7 @@ def make_SQL(service, list_of_attributes):
     #print(db_dict)
     SQL_Engine = PystacheEngine()
     SQL_Engine.load_dict(db_dict)
-    SQL_Engine.render_write(SQL_MUSTACHE, OUTPUT_SQL+service+"-init.sql")
+    SQL_Engine.render_write(SQL_MUSTACHE, OUTPUT_SQL+service.lower()+"-init.sql")
 
 
 def make_db_files(get_yaml_file):
