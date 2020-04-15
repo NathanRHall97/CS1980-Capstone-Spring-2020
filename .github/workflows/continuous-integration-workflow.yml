@@ -18,9 +18,25 @@ jobs:
         run: |
             python -m pip install --upgrade pip
             python -m pip install -r documentation/requirements.txt
-      - name: Run full python file
+      - name: Run Build.py
         run: |
             cd api_gateway_microservice
-            python controller.py
+            python build.py
+      - name: Run Docker-Compose build
+        run: |
+            cd api_gateway_microservice
+            docker-compose build
+      - name: Set up database
+        run: |
+            cd api_gateway_microservice
+            bash dbsetup
+      - name: Shut down containers
+        run: |
+            cd api_gateway_microservice
+            docker-compose down
+      - name: Run docker-compose up and display test results
+        run: |
+            cd api_gateway_microservice
+            docker-compose up
         
         
