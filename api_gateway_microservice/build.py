@@ -109,6 +109,7 @@ def make_dockercompose_file(microservices_dict, compose_dict):
 
     # Database service written in
     new_dict = microservices_dict
+    print(microservices_dict)
     db_ip = get_db_ip(new_dict)
     database_service = {"db_server": {'image': "postgres", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
     compose_dict.add('services', database_service)
