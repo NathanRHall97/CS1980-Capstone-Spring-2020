@@ -39,6 +39,6 @@ jobs:
         run: |
             cd api_gateway_microservice
             docker-compose up & sleep 120
-            kill
+            docker-compose down
         
         
