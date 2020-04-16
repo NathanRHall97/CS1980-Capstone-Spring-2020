@@ -38,6 +38,7 @@ jobs:
       - name: Run docker-compose up and display test results
         run: |
             cd api_gateway_microservice
-            docker-compose up
+            docker-compose up & sleep 120
+            kill
         
         
