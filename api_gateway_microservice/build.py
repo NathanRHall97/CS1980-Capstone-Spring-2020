@@ -267,6 +267,9 @@ def make_master_test_file():
     # Leave Microservice Directory and return function.
     os.chdir('..')
 
+def cool_new_function():
+    print("In Cool New Function!")
+
 
 # Main application logic
 def main():
@@ -303,6 +306,7 @@ def main():
 
     make_db_files(OUTPUT_API)
     make_master_test_file()
+    cool_new_function()
 
 
 if __name__ == '__main__':
