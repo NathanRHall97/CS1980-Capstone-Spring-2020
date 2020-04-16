@@ -2,8 +2,6 @@
 echo "Setting up Databases for microservices.."
 echo "..."
 
-docker-compose up db_server & sleep 15
-
 {{#services}}
 echo "Setting up {{.}} database"
 docker exec my_postgres psql -U postgres -c "create database {{.}}_db"
