@@ -97,6 +97,19 @@ def get_db_ip(microservice_ip_dict):
     return return_ip
 
 
+def assign_test_ips(ip_dict):
+    api_ip = ip_dict['api_gateway']
+    pet_ip = ip_dict['pet']
+    user_ip = ip_dict['user']
+    test_file = open('./microservices/test/test.py', "a")
+    test_file.write('\n')
+    test_file.write('api_ip = \'' + api_ip + '\'')
+    test_file.write('\n')
+    test_file.write('pet_ip = \'' + pet_ip + '\'')
+    test_file.write('\n')
+    test_file.write('user_ip = \'' + user_ip + '\'')
+    test_file.close()
+
 # Takes a dict of microservice: IP address and a dict of docker-compose info and builds a new docker-compose.yaml
 def make_dockercompose_file(microservices_dict, compose_dict):
     compose_dict.add('services', dict())
@@ -109,8 +122,9 @@ def make_dockercompose_file(microservices_dict, compose_dict):
 
     # Database service written in
     new_dict = microservices_dict
-    print(microservices_dict)
+    #print(microservices_dict)
     db_ip = get_db_ip(new_dict)
+    assign_test_ips(microservices_dict)
     database_service = {"db_server": {'image': "postgres", 'container_name': "my_postgres", "networks": {"my_network": {"ipv4_address": db_ip}}, "ports": [("54320:5432")], "environment":{"POSTGRES_PASSWORD": "postgres", "POSTGRES_USER":"postgres"}, "volumes":[("my_dbdata:/var/lib/postgresql/data")]}}
     compose_dict.add('services', database_service)
 
@@ -197,6 +211,7 @@ def make_db_files(get_yaml_file):
                     k = list_of_keys[key]
                     list_of_keys[key] = k.lower()
                 make_bash(list_of_keys)
+
 
 #Gets the individual microservice test file passed in, appends it to the test container and returns
 def write_into_test(microservice_test):
