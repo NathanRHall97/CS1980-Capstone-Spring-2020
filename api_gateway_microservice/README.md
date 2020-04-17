@@ -8,8 +8,9 @@
 1. Install requirements from root folder Documentation `pip install -r requirements.txt`
 2. Run `docker pull postgres` to get the postgres image for the database
 2. From `api_gateway_microservice` directory, run `python build.py` to build requisite YAMLs and database files
+3. From `api_gateway_microservice` directory, run `docker-compose build` to build all microservices
+4. From `api_gateway_microservice` directory, run `bash dbsetup` to initialize the database (Linux/Mac Bash)
 3. From `api_gateway_microservice` directory, run `docker-compose up` to spin up microservices
-4. Open a new terminal and run `bash database/Scripts/dbsetup` to initialize database
 
 ## Notes:
 1. Default configuration information is in `config/` directory.
