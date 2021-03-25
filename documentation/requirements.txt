@@ -12,7 +12,7 @@ openapi-spec-validator==0.2.8
 prance==0.18.1
 pyrsistent==0.15.7
 pystache==0.5.4
-PyYAML==5.3
+PyYAML==5.4
 requests==2.22.0
 semver==2.9.0
 six==1.14.0
